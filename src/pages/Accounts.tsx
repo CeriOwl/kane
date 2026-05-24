@@ -1,0 +1,7 @@
+const Accounts = () => {
+  return (
+    <h1>Hello World</h1>
+  )
+}
+
+export default Accounts

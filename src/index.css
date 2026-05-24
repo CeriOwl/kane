@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Space+Grotesk:wght@300..700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #2A6EBB;
+  --color-dark-primary: #004785;
+  --color-secondary: #A8C4E0;
+  --color-white: #E7F2FF;
+  --font-manrope: "Manrope", sans-serif;
+  --font-space-grotesk: "Space Grotesk", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: var(--font-manrope);
+}
+
+.input-number::-webkit-outer-spin-button,
+.input-number::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
