@@ -1,28 +1,37 @@
-"use client"
-import { useEffect, useState } from "react"
+import { useState, useEffect } from "react"
 import Dashboard from "./pages/Dashboard"
 import Register from "./pages/Register"
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router"
+import { Routes, Route, useNavigate } from "react-router"
 import { ProtectedRoute } from "./lib/routes/ProtectedRoute"
 import type { User } from "./lib/types.ts"
 import { getUser } from "./lib/dbUser"
 import LayoutPages from "./components/layout/Layout"
 
 const App = () => {
-  const navigate = useNavigate()
-  const checkUser = async () => {
-    const user: User[] = await getUser()
-    if (user.length > 0 && user) {
-      return true
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const navigation = useNavigate()
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const user: User[] = await getUser()
+      if (user.length > 0 && user) {
+        setIsAuthenticated(true)
+        navigation("/")
+        return
+      }
+      setIsAuthenticated(false)
+      navigation("/register")
+      return
     }
-  }
-  const [isAuthenticated, setIsAuthenticated] = useState()
+    checkUser()
+  }, [])
+
 
   return (
     <Routes>
-      <Route path='/register' element={<Register setIsAuthenticated={setIsAuthenticated ?? false} />} />
+      <Route index path='/register' element={<Register setIsAuthenticated={setIsAuthenticated} />} />
       <Route path='/' element={<LayoutPages />}>
-        <Route index element={
+        <Route element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
             <Dashboard />
           </ProtectedRoute>}

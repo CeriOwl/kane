@@ -2,8 +2,17 @@ import { useEffect, useState } from "react";
 import { getAccount } from "../lib/dbAccount";
 import type { Account } from "../lib/types";
 
+const hrdcAccount: Account = {
+  id: "",
+  userId: "",
+  accountName: "",
+  accountType: "",
+  money: 0,
+  performance: 0
+}
+
 const Dashboard = () => {
-  const [mainAccount, setMainAccount] = useState<Account>()
+  const [mainAccount, setMainAccount] = useState<Account>(hrdcAccount)
   const dt = new Date()
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const shortMonths = (dt: Date) => months[dt.getMonth()]
@@ -20,6 +29,7 @@ const Dashboard = () => {
       setMainAccount(data[0])
     }
     getAccountData()
+    console.log(mainAccount)
   }, [])
 
   const getPerformanceToday = async () => {
