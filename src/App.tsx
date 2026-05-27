@@ -1,27 +1,25 @@
 import { useState, useEffect } from "react"
 import Dashboard from "./pages/Dashboard"
 import Register from "./pages/Register"
-import { Routes, Route, useNavigate } from "react-router"
+import { Routes, Route } from "react-router"
 import { ProtectedRoute } from "./lib/routes/ProtectedRoute"
 import type { User } from "./lib/types.ts"
 import { getUser } from "./lib/dbUser"
 import LayoutPages from "./components/layout/Layout"
+import { GuestRoute } from "./lib/routes/GuestRoute.tsx"
 
 const App = () => {
+  const [isAuthChecked, setIsAuthChecked] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const navigation = useNavigate()
 
   useEffect(() => {
     const checkUser = async () => {
       const user: User[] = await getUser()
       if (user.length > 0 && user) {
-        setIsAuthenticated(true)
-        navigation("/")
+        setIsAuthenticated(user.length > 0)
+        setIsAuthChecked(true)
         return
       }
-      setIsAuthenticated(false)
-      navigation("/register")
-      return
     }
     checkUser()
   }, [])
@@ -29,18 +27,19 @@ const App = () => {
 
   return (
     <Routes>
-      <Route index path='/register' element={<Register setIsAuthenticated={setIsAuthenticated} />} />
+      <Route path='/register' element={
+        <GuestRoute isAuthChecked={isAuthChecked} isAuthenticated={isAuthenticated}>
+          <Register setIsAuthenticated={setIsAuthenticated} />
+        </GuestRoute>
+      }
+      />
       <Route path='/' element={<LayoutPages />}>
-        <Route element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
+        <Route index element={
+          <ProtectedRoute isAuthChecked={isAuthChecked} isAuthenticated={isAuthenticated}>
             <Dashboard />
           </ProtectedRoute>}
         />
-        <Route path="/accounts" element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <Dashboard />
-          </ProtectedRoute>}
-        />
+
       </Route>
     </Routes>
   )

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { CircleDollarSign } from "lucide-react";
 import { getAccount } from "../lib/dbAccount";
 import type { Account } from "../lib/types";
 
@@ -29,21 +30,31 @@ const Dashboard = () => {
       setMainAccount(data[0])
     }
     getAccountData()
-    console.log(mainAccount)
   }, [])
 
-  const getPerformanceToday = async () => {
-    const mainAccount: Account[] = await getAccount()
-    const money = mainAccount[0].money
-    const performance = mainAccount[0].performance
-    const todayPerformance = (money * performance) / 365
-    return todayPerformance.toFixed(2)
+  const getPerformanceToday = () => {
+    const money = mainAccount.money
+    const performance = mainAccount.performance
+    const todayPerformance = (money * (performance * 0.01)) / 365
+    return todayPerformance
+  }
+  const getPerformanceMontly = () => {
+    const money = mainAccount.money
+    const performance = mainAccount.performance
+    const todayPerformance = ((money * (performance * 0.01)) / 365) * 30
+    return todayPerformance
+  }
+  const getPerformanceYearly = () => {
+    const money = mainAccount.money
+    const performance = mainAccount.performance
+    const todayPerformance = (money * (performance * 0.01))
+    return todayPerformance
   }
 
   const performances = [
-    { title: 'today', performance: getPerformanceToday().then(result => result) },
-    { title: 'month', performance: getPerformanceToday().then(result => result) },
-    { title: 'year', performance: getPerformanceToday().then(result => result) }
+    { title: 'today', performance: getPerformanceToday() },
+    { title: 'month', performance: getPerformanceMontly() },
+    { title: 'year', performance: getPerformanceYearly() }
   ]
 
   return (
@@ -58,20 +69,13 @@ const Dashboard = () => {
           <span className="font-space-grotesk text-4xl font-bold">{mxnFormatter.format(mainAccount?.money)}</span>
         </div>
       </section>
-      <section className="px-4">
-        <div>
-          <h2>Your money is earning</h2>
-          <div>
-            {
-              performances.map(e => (
-                <div>
-                  <p>{e.title}</p>
-                  <span>{e.performance}</span>
-                </div>
-              ))
-            }
-          </div>
+      <section className="px-4 py-6">
+        <div className="flex justify-between items-center bg-white p-6 rounded-xl">
+          <p className="flex items-center gap-x-4 text-lg"><CircleDollarSign className="text-dark-primary" size={30} />Working for you today:</p>
+          <span className="py-2 px-3 rounded-xl bg-dark-primary/10 text-dark-primary">+{mxnFormatter.format(getPerformanceToday())}</span>
         </div>
+      </section>
+      <section>
       </section>
     </>
   )
